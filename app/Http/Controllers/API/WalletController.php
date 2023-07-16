@@ -17,7 +17,16 @@ class WalletController extends Controller
     }
 
     public function detail(){
-        $wallet_id = auth()->user()->wallet->id;
+        $wallet_id = auth()->user()->wallet?->id;
+        if (empty($wallet_id)) {
+            return $this->errorResponse(null, 'Wallet ID not found', 404);
+        }
+
+        $detail = $this->walletService->getDetail($wallet_id);
+        if (empty($detail)) {
+            return $this->errorResponse(null, 'Failed to retrieve wallet detail', 500);
+        }
+
         $detail = $this->walletService->getDetail($wallet_id);
         return $this->successResponse( $detail, 'Successfully Get Detail Wallet');
     }
@@ -59,7 +68,7 @@ class WalletController extends Controller
         }
 
         $widtraw = $this->walletService->widtraw($request);
-        
+
         return $this->successResponse($widtraw,'Successfully Widtrawed');
-    }  
+    }
 }

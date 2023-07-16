@@ -28,31 +28,31 @@ class WalletRepository implements WalletRepositoryInterface
         return DB::transaction(function () use ($wallet_id, $amount) {
             $user = auth()->user();
             $source = $user->wallet;
-    
+
             if ($source->balance < $amount) {
                 throw new Exception("Your balance is not sufficient");
             }
-    
+
             $source->decrement('balance', $amount);
-    
+
             $source->transactions()->create([
                 'type' => Transaction::TYPE_DEBIT,
                 'amount' => $amount,
             ]);
-    
+
             $target = Wallet::find($wallet_id);
-    
+
             if (!$target) {
                 throw new Exception("Wallet id not found");
             }
-    
+
             $target->increment('balance', $amount);
-    
+
             $target->transactions()->create([
                 'type' => Transaction::TYPE_CREDIT,
                 'amount' => $amount,
             ]);
-    
+
             return $source;
         });
     }
@@ -71,7 +71,7 @@ class WalletRepository implements WalletRepositoryInterface
         $wallet_id = auth()->user()->wallet->id;
         return DB::transaction(function () use ($wallet_id, $amount) {
             $wallet = Wallet::findOrFail($wallet_id);
-            
+
             if($wallet->ballance < $amount) {
                 throw new Exception("Wallet Not Enought");
             }
@@ -112,7 +112,7 @@ class WalletRepository implements WalletRepositoryInterface
         $wallet_id = auth()->user()->wallet->id;
         return DB::transaction(function() use ($wallet_id, $amount) {
             $wallet = Wallet::findOrFail($wallet_id);
-         
+
             if($wallet->balance < $amount) {
                 throw new Exception("Wallet Not Enought");
             }
