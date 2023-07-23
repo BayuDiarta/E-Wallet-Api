@@ -16,5 +16,5 @@ interface WalletRepositoryInterface
 
     public function increaseBalance(float $amount);
 
-    public function witdrawBalance(float $amount);
+    public function withdrawBalance(float $amount);
 }

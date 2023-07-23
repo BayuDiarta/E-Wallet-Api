@@ -18,7 +18,7 @@ class WalletService {
         $wallet = $this->walletRepository->getOrCreateWallet(request('user_id'));
         return $wallet;
     }
-    
+
     public function getDetail(int $wallet_id) {
         $detail = $this->walletRepository->getWalletDetail($wallet_id);
         return $detail;
@@ -33,8 +33,8 @@ class WalletService {
         return $this->walletRepository->transferBalance( $request->wallet_id, $request->amount);
     }
 
-    public function widtraw(Request $request) {
-       $topup = $this->walletRepository->witdrawBalance($request->amount);
+    public function withdraw(Request $request) {
+       $topup = $this->walletRepository->withdrawBalance($request->amount);
        return $topup;
     }
 

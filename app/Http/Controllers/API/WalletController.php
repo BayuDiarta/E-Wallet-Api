@@ -58,7 +58,7 @@ class WalletController extends Controller
         return $this->successResponse($transfer,'Successfully transfer balance');
     }
 
-    public function widtraw(Request $request){
+    public function withdraw(Request $request){
         $validator = Validator::make($request->all(),[
             'amount' => 'numeric|min:0|required',
         ]);
@@ -67,8 +67,8 @@ class WalletController extends Controller
             return $this->errorResponse(null, $validator->errors(), 422);
         }
 
-        $widtraw = $this->walletService->widtraw($request);
+        $withdraw = $this->walletService->withdraw($request);
 
-        return $this->successResponse($widtraw,'Successfully Widtrawed');
+        return $this->successResponse($withdraw,'Successfully Widtrawed');
     }
 }

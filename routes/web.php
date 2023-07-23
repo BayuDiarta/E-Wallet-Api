@@ -44,7 +44,7 @@ $router->group(['prefix' => 'api', 'middleware' => ['auth']], function () use ($
         $router->get('detail', 'WalletController@detail');
         $router->post('topup', 'WalletController@topup');
         $router->post('transfer', 'WalletController@transfer');
-        $router->post('widtraw', 'WalletController@widtraw');
+        $router->post('withdraw', 'WalletController@withdraw');
     });
 
     //ROUTE FOR TRANSACTION

@@ -3,12 +3,14 @@ namespace Tests;
 
 use Tests\TestCase;
 use App\Models\User;
-use App\Models\Wallet;
-use App\Http\Controllers\UserController;
+Use App\Models\Wallet;
+use Laravel\Lumen\Testing\DatabaseMigrations;
+use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class UserControllerTest extends TestCase
+
+class UserTest extends TestCase
 {
-
+    use DatabaseMigrations;
     /**
      * Test case for creating a user.
      *
@@ -16,19 +18,22 @@ class UserControllerTest extends TestCase
      */
     public function testCreateUser()
     {
-        $login = $this->loginUser();
+        $login = $this->login();
         $requestData = [
             'fullname' => 'John Doe',
             'email' => 'johndoe@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
+            'password' => 'Pasww123!34',
+            'password_confirmation' => 'Pasww123!34',
             'telphone' => '081234567890',
         ];
 
-        $tes = $this->post('/api/users', $requestData, ['Authorization' => 'Bearer ' . $login['token']])
-            ->seeStatusCode(200)
-            ->seeJsonStructure(['meta']);
-            
+        $response = $this->post('/api/users', $requestData, ['Authorization' => 'Bearer ' . $login['token']]);
+
+        $response->seeStatusCode(200)
+            ->seeJsonStructure([
+                'meta'
+            ]);
+
         // Menambahkan asserstion tambahan sesuai dengan logika bisnis
         $this->seeInDatabase('users', [
             'email' => 'johndoe@example.com',
@@ -40,79 +45,70 @@ class UserControllerTest extends TestCase
      *
      * @return void
      */
-    // public function testGetUserProfile()
-    // {
-    //     $login = $this->loginUser();
-    //     $user = User::factory()->create();
+     public function testGetUserProfile()
+     {
+         $login = $this->login();
 
-    //     $this->actingAs($user)
-    //         ->get('/api/users/profile', ['Authorization' => 'Bearer ' . $login['token']])
-    //         ->seeStatusCode(200)
-    //         ->seeJsonStructure(['meta']);
-    // }
+         $this->get('/api/users/profile', ['Authorization' => 'Bearer ' . $login['token']])
+             ->seeStatusCode(200)
+             ->seeJsonStructure(['meta']);
+     }
 
-//     /**
-//      * Test case for creating a wallet.
-//      *
-//      * @return void
-//      */
-//     public function testCreateWallet()
-//     {
-//         $wallet = Wallet::factory()->create();
-//         $login = $this->loginUser();
-//         $this->actingAs($wallet)
-//             ->post('/api/wallet/register',  $wallet, ['Authorization' => 'Bearer ' . $login['token']])
-//             ->seeStatusCode(200)
-//             ->seeJsonStructure(['meta']);
-//     }
+     /**
+      * Test case for creating a wallet.
+      *
+      * @return void
+      */
+     public function testCreateWallet()
+     {
+         // Create a test user using the factory
+         $user = User::factory()->create();
 
-//     /**
-//      * Test case for updating a user.
-//      *
-//      * @return void
-//      */
-//     public function testUpdateUser()
-//     {
-//         $user = User::factory()->create();
-//         $login = $this->loginUser();
-//         $requestData = [
-//             'fullname' => 'Jane Doe',
-//             'email' => 'janedoe@example.com',
-//             'password' => 'newpassword',
-//             'password_confirmation' => 'newpassword',
-//             'telphone' => '081234567890',
-//         ];
+         // Create a wallet associated with the test user using the factory with state
+         $wallet = Wallet::factory()->state([
+             'user_id' => $user->id,
+         ])->create();
 
-//         $this->actingAs($user)
-//             ->put('/api/users/' . $user->id, $requestData, ['Authorization' => 'Bearer ' . $login['token']])
-//             ->seeStatusCode(200)
-//             ->seeJsonStructure(['meta']);
+         $login = $this->login();
+         $requestData = $wallet->toArray();
+         $this->post('/api/wallet/create',  $requestData, ['Authorization' => 'Bearer ' . $login['token']])
+             ->seeStatusCode(200)
+             ->seeJsonStructure(['meta']);
+     }
 
-//         // Menambahkan asserstion tambahan sesuai dengan logika bisnis
-//         $this->seeInDatabase('users', [
-//             'id' => $user->id,
-//             'fullname' => 'Jane Doe',
-//             'email' => 'janedoe@example.com',
-//         ]);
-//     }
+     /**
+      * Test case for updating a user.
+      *
+      * @return void
+      */
+     public function testUpdateUser()
+     {
+         $user = User::factory()->create();
+         $login = $this->login();
+         $requestData = [
+             'fullname' => 'John Dos',
+             'email' => 'johndoe@example.com',
+             'password' => 'Pasww123!34',
+             'password_confirmation' => 'Pasww123!34',
+             'telphone' => '081234567890',
+         ];
 
-//     /**
-//      * Test case for deleting a user.
-//      *
-//      * @return void
-//      */
-//     public function testDeleteUser()
-//     {
-//         $user = User::factory()->create();
-//         $login = $this->loginUser();
-//         $this->actingAs($user)
-//             ->delete('/api/users/' . $user->id, ['Authorization' => 'Bearer ' . $login['token']])
-//             ->seeStatusCode(200)
-//             ->seeJsonStructure(['meta']);
+         $this->put('/api/users/' . $user->id, $requestData, ['Authorization' => 'Bearer ' . $login['token']])
+             ->seeStatusCode(200)
+             ->seeJsonStructure(['meta']);
+     }
 
-//         // Menambahkan asserstion tambahan sesuai dengan logika bisnis
-//         $this->notSeeInDatabase('users', [
-//             'id' => $user->id,
-//         ]);
-//     }
+     /**
+      * Test case for deleting a user.
+      *
+      * @return void
+      */
+     public function testDeleteUser()
+     {
+         $user = User::factory()->create();
+         $login = $this->login();
+         $this->delete('/api/users/' . $user->id, ['Authorization' => 'Bearer ' . $login['token']])
+             ->seeStatusCode(200)
+             ->seeJsonStructure(['meta']);
+     }
 }

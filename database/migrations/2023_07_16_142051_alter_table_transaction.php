@@ -14,9 +14,9 @@ return new class extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE transactions DROP CONSTRAINT transactions_type_check');
-
-        DB::statement('ALTER TABLE transactions ADD CONSTRAINT transactions_type_check CHECK (type IN (\'credit\', \'witdraw\', \'debit\'))');
+//        DB::statement('ALTER TABLE transactions DROP CONSTRAINT transactions_type_check');
+//
+//        DB::statement('ALTER TABLE transactions ADD CONSTRAINT transactions_type_check CHECK (type IN (\'credit\', \'witdraw\', \'debit\'))');
     }
 
     /**
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        DB::statement('ALTER TABLE transactions DROP CONSTRAINT transactions_type_check CHECK (type IN (\'credit\', \'witdraw\', \'debit\'))');
+//        DB::statement('ALTER TABLE transactions DROP CONSTRAINT transactions_type_check CHECK (type IN (\'credit\', \'witdraw\', \'debit\'))');
     }
 };

@@ -107,7 +107,7 @@ class WalletRepository implements WalletRepositoryInterface
         });
     }
 
-    public function witdrawBalance(float $amount)
+    public function withdrawBalance(float $amount)
     {
         $wallet_id = auth()->user()->wallet->id;
         return DB::transaction(function() use ($wallet_id, $amount) {
